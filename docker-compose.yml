@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-leaderboard
+    ports:
+      - "6379:6379"
+    networks:
+      - leaderboard-network
+
+  app:
+    build: .
+    container_name: leaderboard-app
+    depends_on:
+      - redis
+    networks:
+      - leaderboard-network
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_ADDR=redis:6379
+
+networks:
+  leaderboard-network:
+    driver: bridge
